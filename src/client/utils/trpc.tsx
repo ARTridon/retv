@@ -18,10 +18,6 @@ export type RouterInputs = inferRouterInputs<AppRouter>;
 export type RouterOutputs = inferRouterOutputs<AppRouter>;
 
 export const trpc = createTRPCReact<AppRouter>();
-const unautorizedMessage = [
-  "Access token is required",
-  "Token already expired",
-];
 
 export const queryClient = new QueryClient({
   defaultOptions: {

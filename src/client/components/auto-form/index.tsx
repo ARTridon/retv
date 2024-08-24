@@ -1,7 +1,11 @@
 "use client";
 import { Form } from "@/web/components/ui/form";
 import React from "react";
-import { DefaultValues, FormState, useForm } from "react-hook-form";
+import {
+  DefaultValues,
+  FormState,
+  useForm,
+} from "react-hook-form";
 import { z } from "zod";
 
 import { Button } from "@/web/components/ui/button";
@@ -50,7 +54,10 @@ function AutoForm<SchemaType extends ZodObjectOrWrapped>({
   values?: Partial<z.infer<SchemaType>>;
   onValuesChange?: (values: Partial<z.infer<SchemaType>>) => void;
   onParsedValuesChange?: (values: Partial<z.infer<SchemaType>>) => void;
-  onSubmit?: (values: z.infer<SchemaType>) => void;
+  onSubmit?: (
+    values: z.infer<SchemaType>,
+    formResetHandler:()=> void
+  ) => void;
   fieldConfig?: FieldConfig<z.infer<SchemaType>>;
   children?:
     | React.ReactNode
@@ -69,12 +76,18 @@ function AutoForm<SchemaType extends ZodObjectOrWrapped>({
     values: valuesProp,
   });
 
+  function resetFormValues() {
+    form.reset(undefined, { keepValues: false, keepDefaultValues: true });
+  }
+
   function onSubmit(values: z.infer<typeof formSchema>) {
     const parsedValues = formSchema.safeParse(values);
     if (parsedValues.success) {
-      onSubmitProp?.(parsedValues.data);
+      onSubmitProp?.(parsedValues.data, resetFormValues);
     }
   }
+
+
 
   const values = form.watch();
   // valuesString is needed because form.watch() returns a new object every time

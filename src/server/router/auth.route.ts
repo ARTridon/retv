@@ -75,7 +75,9 @@ export const authRouter = router({
         });
       }
 
-      return {};
+      return {
+        message: "User created",
+      };
     }),
   refresh: protectedProcedure.query(async ({ ctx }) => {
     const user = await verifyToken(ctx.access_token);

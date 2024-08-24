@@ -13,6 +13,7 @@ import {
 import * as z from "zod";
 import AutoForm, { AutoFormSubmit } from "../components/auto-form";
 import { useId } from "react";
+import { toast } from "sonner";
 
 const signUpSchema = z.object({
   email: z
@@ -43,15 +44,6 @@ function SignUp() {
   const formId = useId();
   const { mutate } = trpc.auth.sign_up.useMutation();
 
-  const onSubmit = async (values: z.infer<typeof signUpSchema>) => {
-     mutate(values,{
-        onSuccess: () => {
-        },
-        onError: (error) => {
-        },
-     });
-  }
-
   return (
     <div className="flex items-center justify-center gap-3 flex-wrap h-screen p-3">
       <Card className="max-w-sm w-full">
@@ -65,7 +57,14 @@ function SignUp() {
           <AutoForm
             formId={formId}
             formSchema={signUpSchema}
-            onSubmit={onSubmit}
+            onSubmit={(values, formResetHandler) => {
+              mutate(values, {
+                onSuccess: (data) => {
+                  toast.success(data.message);
+                  formResetHandler();
+                },
+              });
+            }}
             fieldConfig={{
               password: {
                 inputProps: {
